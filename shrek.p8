@@ -6,6 +6,8 @@ __lua__
 test=""
 
 function _init()
+ t=0
+
  --constants
  --pixel distance in map units
  pixel=0.125
@@ -145,10 +147,18 @@ function _init()
 end
 
 function _update()
+ updatetime()
  updateinput()
  updatecollision()
  updateav()
  updatehitboxes()
+end
+
+function updatetime()
+ t+=1
+ if t==31 then
+  t=0
+ end
 end
 
 function updateinput()
@@ -349,6 +359,15 @@ function _draw()
  
  for p in all(av.parts) do
   if p.rot then
+   local direction=1
+   
+  	if av.flipped then direction=-1 end
+  
+   p.rot=direction*(av.xvel/av.xmaxvel)*(t/30)
+
+   --normalise
+   p.rot=(0.2+0.2)/(1-0)*(p.rot-1)+0.2
+   
    --rotate the sprite
    rspr(p.xs,p.ys,
     0,0,p.rot,0.5)
